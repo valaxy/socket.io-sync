@@ -2,3 +2,4 @@
 node_modules/
 lib/siosync.js
 temp/
+deploy/
