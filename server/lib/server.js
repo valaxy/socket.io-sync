@@ -1,8 +1,7 @@
 const http = require('http')
 const socketIO = require('socket.io')
 const url = require('url')
-
-const TAG = '[server]'
+const log = require('log4js').getLogger('server')
 
 module.exports = {
 	start({host, port}, callback) {
@@ -11,10 +10,10 @@ module.exports = {
 
 		io.of('/push').on('connection', socket => {
 			let roomID = url.parse(socket.handshake.url, true).query.room
-			console.info(`${TAG} connect push: ${roomID}`)
+			log.info(`connect push: ${roomID}`)
 
 			socket.on('file', ({path, text}) => {
-				console.info(`${TAG} change file: ${path}`)
+				log.info(`change file: ${path}`)
 				io.of('/pull').to(roomID).emit('onFile', {path, text})
 			})
 		})
@@ -22,14 +21,14 @@ module.exports = {
 
 		io.of('/pull').on('connection', socket => {
 			let roomID = url.parse(socket.handshake.url, true).query.room
-			console.info(`${TAG} connect pull: ${roomID}`)
+			log.info(`connect pull: ${roomID}`)
 
 			socket.join(roomID)
 		})
 
 
 		server.listen(port, host, (...params) => {
-			console.info(`${TAG} server start listen`)
+			log.info(`server start listen`)
 			callback(...params)
 		})
 	}
