@@ -1,0 +1,1 @@
+node ../../pull/lib/cli --config siosync-pull.js

@@ -1,0 +1,1 @@
+node ../../server/lib/cli --config siosync-server.js

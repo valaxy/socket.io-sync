@@ -2,4 +2,7 @@
 deploy/
 
 node_modules/
+
 test/temp/
+test/manual/push/
+test/manual/pull
