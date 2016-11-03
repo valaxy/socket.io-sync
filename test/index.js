@@ -13,7 +13,7 @@ describe('everything', function () {
 			pull.start({
 				host         : '127.0.0.1',
 				port         : 80,
-				workplacePath: path.join(__dirname, '../temp'),
+				workplacePath: path.join(__dirname, './temp'),
 				room         : 'abc'
 			}, () => {
 				let io = socketIO('http://127.0.0.1/push?room=abc')

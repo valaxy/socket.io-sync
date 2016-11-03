@@ -1,5 +1,4 @@
 .idea/
-temp/
 deploy/
 
 node_modules/
@@ -10,3 +9,7 @@ push/node_modules/
 server/siosync.js
 pull/siosync.js
 push/siosync.js
+
+test/temp/
+push/temp/
+pull/temp/

@@ -1,0 +1,9 @@
+{
+  "name": "socket.io-sync-push",
+  "version": "0.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "chokidar": "^1.6.1",
+    "socket.io-client": "^1.5.1"
+  }
+}
