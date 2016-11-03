@@ -1,7 +1,9 @@
 // 在push目录运行
 module.exports = {
-	host   : '127.0.0.1',
-	port   : 12345,
+	socketHost: '127.0.0.1',
+	socketPort: 12345,
+	socketPath: '/socket.io',
+
 	room   : 'abc',
 	path   : ['temp/'],
 	ignored: []

@@ -5,11 +5,21 @@ const fs = require('fs-extra')
 const TAG = '[pull]'
 
 module.exports = {
-	start({host, port, workplacePath, room}, callback) {
+	start({
+		socketHost,
+		socketPort,
+		socketPath,
+		workplacePath,
+		room
+		}, callback) {
 		workplacePath = path.normalize(workplacePath)
 		console.info(`${TAG} initialize, workplacePath:${workplacePath} room:${room}`)
 
-		let socket = socketIO(`http://${host}:${port}/pull?room=${room}`)
+		let socket = socketIO(`http://${socketHost}:${socketPort}/pull?room=${room}`, {path: socketPath})
+
+		socket.on('connect', () => {
+			console.info(`${TAG} connect to ${socket.io.uri}`)
+		})
 
 		socket.on('onFile', ({path:filePath, text}) => {
 			console.info(`${TAG} change ${filePath}`)
@@ -19,7 +29,7 @@ module.exports = {
 				return console.error(`${TAG} save ${filePath} failed: it is not sub path of ${workplacePath}`)
 			}
 
-			fs.outputFile(absFilePath, text, {encoding: 'utf-8'}, err => {
+			fs.outputFile(absFilePath, text, err => {
 				if (err) return console.error(`${TAG} save ${filePath} failed: ${err}`)
 				console.info(`${TAG} sync ${filePath} success`)
 			})

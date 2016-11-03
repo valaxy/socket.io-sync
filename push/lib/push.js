@@ -8,11 +8,16 @@ module.exports = function ({
 	ignoreInitial,
 	path: paths,
 	ignored,
-	host,
-	port,
+	socketHost,
+	socketPort,
+	socketPath,
 	room
 	}) {
-	let socket = socketIO(`http://${host}:${port}/push?room=${room}`)
+	let socket = socketIO(`http://${socketHost}:${socketPort}/push?room=${room}`, {path: socketPath})
+
+	socket.on('connect', () => {
+		console.info(`${TAG} connect to ${socket.io.uri}`)
+	})
 
 	let watcher = chokidar.watch(paths, {
 		ignored,
@@ -23,8 +28,11 @@ module.exports = function ({
 		p = p.replace(/\\/g, '/')
 		console.info(`${TAG} ${p} add`)
 
-		let text = fs.readFileSync(p, {encoding: 'utf-8'})
-		socket.emit('file', {path: p, text})
+		fs.readFile(p, (err, buf) => {
+			if (err) return console.error(`${TAG} ${err}`)
+
+			socket.emit('file', {path: p, text: buf})
+		})
 	}
 
 	watcher.on('add', change)

@@ -1,8 +1,8 @@
 {
   "name": "socket.io-sync-server",
-  "version": "0.0.0-dev",
+  "version": "0.1.0-dev",
   "bin": {
-    "siosync-server": "./cli.js"
+    "siosync-server": "./lib/cli.js"
   },
   "dependencies": {
     "commander": "^2.9.0",
