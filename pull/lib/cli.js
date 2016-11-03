@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const commander = require('commander')
 const path = require('path')
-const pkg = require('./package')
+const pkg = require('../package')
 const pull = require('./pull')
 
 

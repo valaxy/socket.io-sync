@@ -1,9 +1,13 @@
 {
-  "name": "socket.io-sync-push",
-  "version": "0.0.0",
-  "license": "MIT",
+  "name": "siosync-push",
+  "version": "0.0.0-dev",
+  "bin": {
+    "siosync-push": "./lib/cli.js"
+  },
   "dependencies": {
     "chokidar": "^1.6.1",
+    "commander": "^2.9.0",
     "socket.io-client": "^1.5.1"
-  }
+  },
+  "license": "MIT"
 }
