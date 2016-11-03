@@ -1,5 +1,12 @@
 .idea/
-node_modules/
-lib/siosync.js
 temp/
 deploy/
+
+node_modules/
+server/node_modules/
+pull/node_modules/
+push/node_modules/
+
+server/siosync.js
+pull/siosync.js
+push/siosync.js

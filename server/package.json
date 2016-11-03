@@ -1,0 +1,12 @@
+{
+  "name": "socket.io-sync-server",
+  "version": "0.0.0",
+  "bin": {
+    "siosync-server": "./cli.js"
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "socket.io": "^1.5.1"
+  },
+  "license": "MIT"
+}

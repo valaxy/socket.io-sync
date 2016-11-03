@@ -5,7 +5,7 @@ const url = require('url')
 const TAG = '[server]'
 
 module.exports = {
-	start({serverHost, serverPort, serverPath}, callback) {
+	start({host, port}, callback) {
 		const server = http.createServer()
 		const io = socketIO(server)
 
@@ -28,7 +28,7 @@ module.exports = {
 		})
 
 
-		server.listen(serverPort, serverHost, (...params) => {
+		server.listen(port, host, (...params) => {
 			console.info(`${TAG} server start listen`)
 			callback(...params)
 		})

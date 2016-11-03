@@ -5,11 +5,11 @@ const fs = require('fs-extra')
 const TAG = '[pull]'
 
 module.exports = {
-	start({connectHost, serverPort, workplacePath, room}, callback) {
+	start({host, port, workplacePath, room}, callback) {
 		workplacePath = path.normalize(workplacePath)
 		console.info(`${TAG} initialize, workplacePath:${workplacePath} room:${room}`)
 
-		let socket = socketIO(`http://${connectHost}:${serverPort}/pull?room=${room}`)
+		let socket = socketIO(`http://${host}:${port}/pull?room=${room}`)
 
 		socket.on('onFile', ({path:filePath, text}) => {
 			console.info(`${TAG} change ${filePath}`)
