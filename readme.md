@@ -1,12 +1,13 @@
 [![devDependencies Status](https://david-dm.org/valaxy/socket.io-sync/dev-status.svg?style=flat-square)](https://david-dm.org/valaxy/socket.io-sync?type=dev)
 
-## Server
-First of all, you should put **siosync-server** to where all **siosync-push** and **siosync-pull** can access
+**socket.io-sync** is a tool collection which help you push files to any places you may want them be by network and socket.io
 
-At the server where **siosync-server** put
+## Server
+First of all, you should put **siosync-server** to where all **siosync-push** and **siosync-pull** can access.
+At the server where **siosync-server** placed in, run:
 
 ```bash
-npm install --global siosync-server
+npm install --g siosync-server
 ```
 
 Create a config file **siosync.js**
@@ -18,7 +19,7 @@ module.exports = {
 }
 ```
 
-Run it!
+Run it and keep it always running:
 
 ```bash
 siosync-server
@@ -28,41 +29,59 @@ Check `siosync-server --help` for more detail
 
 
 ## Pull
-**siosync-pull** is the end that pull file changes from **siosync-server** which actually from **siosync-push**
+Secondly, put **siosync-pull** to where you want files to be received.
+To be precise, **siosync-pull** is the end that pull files from **siosync-server** which actually from **siosync-push**:
 
 ```bash
-npm install --global siosync-pull
+npm install -g siosync-pull
 ```
 
-Create a config file **siosync.js**
+And create a config file **siosync.js**:
 
 ```js
 module.exports = {
-    socketHost   : '127.0.0.1',  
-    socketPort   : 12345,
-    socketPath   : '/socket.io',  // optional
-    room         : 'abc',         // a random string that must match siosync-push
-    workplacePath: '/home/user/mywork/'
+    socketHost   : '127.0.0.1',   // server host
+    socketPort   : 12345,         // server port
+    socketPath   : '/socket.io',  // optional, default is 「/socket.io」
+    room         : 'abc',         // any string but must match siosync-push
+    workplacePath: '/home/user/mywork/' // put files to where
 }
 ```
+
+Run it:
+
+```bash
+siosync-pull
+```
+
+Check `siosync-pull --help` for more detail
 
 ## Push
-**siosync-push** is the end that push file changes to **siosync-server**
+Thirdly, put **siosync-push** to where you want files to be sent to other places:
 
 ```bash
-npm install --global siosync-push
+npm install -g siosync-push
 ```
 
-Create a config file **siosync.js**
-
+Create a config file **siosync.js**:
 
 ```js
 module.exports = {
-    socketHost: '127.0.0.1',
-    socketPort: 12345,
-    socketPath   : '/socket.io', // optional
-    room      : 'abc',           // a random string that must match siosync-pull
-    paths     : ['push/'],       // chokidar glob files to push
-    ignored   : []               // optional
+    socketHost: '127.0.0.1',   // server host
+    socketPort: 12345,         // server port
+    socketPath: '/socket.io',  // optional, default is 「/socket.io」
+    room      : 'abc',         // any string but must match siosync-pull
+    paths     : ['push/'],     // files/dirs to push, chokidar glob patterns
+    ignored   : []             // optional
 }
 ```
+
+Run it:
+
+```bash
+siosync-push
+siosync-push --watch
+siosync-push --watch --ignoreInitial
+```
+
+Check `siosync-push --help` for more detail
