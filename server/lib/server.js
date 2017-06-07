@@ -2,6 +2,7 @@ const http = require('http')
 const socketIO = require('socket.io')
 const url = require('url')
 const log = require('log4js').getLogger('server')
+const pkg = require('../package')
 
 module.exports = {
 	start({host, port}, callback) {
@@ -12,10 +13,23 @@ module.exports = {
 			let roomID = url.parse(socket.handshake.url, true).query.room
 			log.info(`connect push: ${roomID}`)
 
-			socket.on('file', ({path, text}) => {
-				log.info(`change file: ${path}`)
-				io.of('/pull').to(roomID).emit('onFile', {path, text})
+            socket.emit('version', {
+                version: pkg.version
+            })
+
+			socket.on('file', ({path, text}, ack) => {
+				log.info(`push file: ${path}`)
+				io.of('/pull').to(roomID).emit('file', {path, text})
+                ack()
 			})
+
+            socket.on('end', () => {
+                io.of('/pull').to(roomID).emit('end')
+            })
+
+            socket.on('disconnect', () => {
+                log.info(`disconnect push: ${roomID}`)
+            })
 		})
 
 
@@ -23,7 +37,15 @@ module.exports = {
 			let roomID = url.parse(socket.handshake.url, true).query.room
 			log.info(`connect pull: ${roomID}`)
 
-			socket.join(roomID)
+            socket.emit('version', {
+                version: pkg.version
+            })
+
+            socket.on('disconnect', () => {
+                log.info(`disconnect pull: ${roomID}`)
+            })
+
+            socket.join(roomID)
 		})
 
 

@@ -1,13 +1,13 @@
 {
   "name": "siosync-server",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "bin": {
     "siosync-server": "./lib/cli.js"
   },
   "dependencies": {
     "commander": "^2.9.0",
-    "log4js": "^0.6.38",
-    "socket.io": "^1.5.1"
+    "log4js": "^1.1.1",
+    "socket.io": "^2.0.2"
   },
   "license": "MIT"
 }

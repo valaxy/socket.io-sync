@@ -1,14 +1,14 @@
 {
   "name": "siosync-pull",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "bin": {
     "siosync-pull": "./lib/cli.js"
   },
   "dependencies": {
     "commander": "^2.9.0",
-    "fs-extra": "^1.0.0",
-    "log4js": "^0.6.38",
-    "socket.io-client": "^1.5.1"
+    "fs-extra": "^3.0.1",
+    "log4js": "^1.1.1",
+    "socket.io-client": "^2.0.2"
   },
   "license": "MIT"
 }
