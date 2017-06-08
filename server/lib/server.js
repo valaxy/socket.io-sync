@@ -4,6 +4,13 @@ const url = require('url')
 const log = require('log4js').getLogger('server')
 const pkg = require('../package')
 
+// version, server -> pull
+// version, server -> push
+// file,    push   -> server
+// file,    server -> pull
+// end,     push   -> server
+// end,     server -> pull
+
 module.exports = {
 	start({host, port}, callback) {
 		const server = http.createServer()
@@ -11,11 +18,7 @@ module.exports = {
 
 		io.of('/push').on('connection', socket => {
 			let roomID = url.parse(socket.handshake.url, true).query.room
-			log.info(`connect push: ${roomID}`)
-
-            socket.emit('version', {
-                version: pkg.version
-            })
+			log.info(`connect push: ${socket.id}, room: ${roomID}`)
 
 			socket.on('file', ({path, text}, ack) => {
 				log.info(`push file: ${path}`)
@@ -28,29 +31,36 @@ module.exports = {
             })
 
             socket.on('disconnect', () => {
-                log.info(`disconnect push: ${roomID}`)
+                log.info(`disconnect push: ${socket.id}`)
+            })
+
+
+            // once connect, the push should check it's version
+            socket.emit('version', {
+                version: pkg.version
             })
 		})
 
 
 		io.of('/pull').on('connection', socket => {
 			let roomID = url.parse(socket.handshake.url, true).query.room
-			log.info(`connect pull: ${roomID}`)
-
-            socket.emit('version', {
-                version: pkg.version
-            })
+			log.info(`connect pull: ${socket.id}, room: ${roomID}`)
 
             socket.on('disconnect', () => {
-                log.info(`disconnect pull: ${roomID}`)
+                log.info(`disconnect pull: ${socket.id}`)
             })
 
             socket.join(roomID)
+
+            // once connect, the pull should check it's version
+            socket.emit('version', {
+                version: pkg.version
+            })
 		})
 
 
 		server.listen(port, host, (...params) => {
-			log.info(`server start listen`)
+			log.info(`server start listen: ${host}:${port}`)
 			callback(...params)
 		})
 	}

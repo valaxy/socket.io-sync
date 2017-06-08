@@ -25,7 +25,7 @@ module.exports = function ({
             socket.close()
             process.exit(-1)
         } else {
-            log.info('check version success')
+            log.info(`check version success: ${version}`)
         }
     })
 
