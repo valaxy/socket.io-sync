@@ -45,6 +45,7 @@ module.exports = {
     socketPath   : '/socket.io',  // optional, default is 「/socket.io」
     room         : 'abc',         // any string but must match siosync-push
     workplacePath: '/home/user/mywork/' // put files to where
+    chmod        : 0o777,         // optional, chmod of file/dir, default is 777
 }
 ```
 

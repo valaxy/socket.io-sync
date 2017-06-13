@@ -8,7 +8,7 @@ const log = require('log4js').getLogger('pull')
 class RuntimeError extends Error { }
 
 const toAbsPath = function (p) {
-	return path.isAbsolute(p) ? p : path.join(process.cwd(), p)
+	return path.normalize(path.isAbsolute(p) ? p : path.join(process.cwd(), p))
 }
 
 const configCheck = function(configPath) {
@@ -28,8 +28,9 @@ const configCheck = function(configPath) {
     if (!config.workplacePath) { throw new RuntimeError('workplacePath must exist in config file') }
 
     if (!config.socketPath) { config.socketPath = '/socket.io' }
+    if (!config.chmod) { config.chmod = 0o777 }
 
-    config.workplacePath = path.normalize(toAbsPath(config.workplacePath))
+    config.workplacePath = toAbsPath(config.workplacePath)
     return config
 }
 

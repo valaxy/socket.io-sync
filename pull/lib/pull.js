@@ -3,6 +3,7 @@ const socketIO = require('socket.io-client')
 const fs = require('fs-extra')
 const log = require('log4js').getLogger('pull')
 const pkg = require('../package')
+const versionCheck = require('./versionCheck')
 
 module.exports = {
 	start({
@@ -10,7 +11,8 @@ module.exports = {
 		socketPort,
 		socketPath,
 		workplacePath,
-		room
+		room,
+        chmod
 		}) {
 		let socket = socketIO(`http://${socketHost}:${socketPort}/pull?room=${room}`, {path: socketPath})
 
@@ -26,7 +28,9 @@ module.exports = {
 				return log.error(`sync ${filePath} failed: it is not sub path of ${workplacePath}`)
 			}
 
-			fs.outputFile(absFilePath, text, err => {
+			fs.outputFile(absFilePath, text, {
+                mode: chmod
+            }, err => {
 				if (err) return log.error(`save ${filePath} failed: ${err}`)
 				log.info(`sync ${filePath} success`)
 			})
@@ -37,13 +41,18 @@ module.exports = {
         })
 
         socket.on('version', ({version}) => {
-            if (version != pkg.version) {
-                log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the client or server`)
-                socket.close()
-                process.exit(-1)
-            } else {
-                log.info(`check version success: ${version}`)
+            if (versionCheck.isCompatible(pkg.version, version)) {
+                log.info(`check version success, server: ${version}, client: ${pkg.version}`)
+                return
             }
+
+            if (versionCheck.isSmaller(pkg.version, version)) {
+                log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the client`)
+            } else {
+                log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the server`)
+            }
+            socket.close()
+            process.exit(-1)
         })
 	}
 }

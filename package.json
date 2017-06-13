@@ -1,6 +1,6 @@
 {
   "name": "socket.io-sync",
-  "version": "0.3.0-dev",
+  "version": "0.0.0",
   "scripts": {
     "test": "mocha test/index --timeout 10000"
   },
