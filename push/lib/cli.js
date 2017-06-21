@@ -26,7 +26,10 @@ const checkConfig = function(configPath) {
     if (!config.room)       { throw new RuntimeError('room must exist in config file') }
     if (!config.paths)      { throw new RuntimeError('paths must exist in config file') }
 
-    if (!config.socketPath) { config.socketPath = '/socket.io' }
+    if (!config.socketPath)    { config.socketPath = '/socket.io' }
+    if (!config.workplacePath) { config.workplacePath = process.cwd() }
+
+    config.workplacePath = toAbsPath(config.workplacePath)
 
     return config
 }
@@ -49,6 +52,7 @@ const main = function () {
     } catch (e) {
         if (e instanceof RuntimeError) {
             log.error(e.message)
+            log.error(e)
         } else {
             throw e
         }

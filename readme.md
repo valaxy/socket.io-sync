@@ -68,12 +68,13 @@ Create a config file **siosync.js**:
 
 ```js
 module.exports = {
-    socketHost: '127.0.0.1',   // server host
-    socketPort: 12345,         // server port
-    socketPath: '/socket.io',  // optional, default is 「/socket.io」
-    room      : 'abc',         // any string but must match siosync-pull
-    paths     : ['push/'],     // files/dirs to push, chokidar glob patterns
-    ignored   : []             // optional
+    socketHost: '127.0.0.1',  // server host
+    socketPort: 12345,        // server port
+    socketPath: '/socket.io', // optional, default is 「/socket.io」
+    room: 'abc',              // any string but must match siosync-pull
+    paths: ['push/'],         // files/dirs to push, chokidar glob patterns
+    workplacePath: '/home/project' // optional, workplace dir, default is cwd
+    ignored: []                    // optional
 }
 ```
 

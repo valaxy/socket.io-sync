@@ -1,6 +1,6 @@
 {
   "name": "siosync-push",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "bin": {
     "siosync-push": "./lib/cli.js"
   },
