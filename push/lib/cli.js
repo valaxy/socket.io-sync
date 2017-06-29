@@ -13,7 +13,7 @@ const toAbsPath = function (p) {
 const checkConfig = function(configPath) {
     if (!configPath) { configPath = 'siosync.js' }
     configPath = toAbsPath(configPath)
-    log.info(`config file in ${configPath}`)
+    log.info(`config file: ${configPath}`)
 
     try {
         var config = require(configPath)

@@ -1,10 +1,10 @@
 const semver = require('semver')
 
 module.exports = {
-    isCompatible(clientVersion, serverVersion) {
-        let major = semver.major(serverVersion)
-        let minor = semver.minor(serverVersion)
-        return semver.satisfies(clientVersion, `>= ${major}.0.0`) && semver.satisfies(clientVersion, `< ${major+1}.0.0`)
+    compare(clientVersion, serverVersion) {
+        let clientMajor = semver.major(clientVersion)
+        let serverMajor = semver.major(serverVersion)
+        return clientMajor - serverMajor
     },
 
     // not compatible

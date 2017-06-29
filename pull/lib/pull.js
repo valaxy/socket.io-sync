@@ -3,7 +3,7 @@ const socketIO = require('socket.io-client')
 const fs = require('fs-extra')
 const log = require('log4js').getLogger('pull')
 const pkg = require('../package')
-const versionCheck = require('./versionCheck')
+const versionCheck = require('./share/versionCheck')
 
 module.exports = {
 	start({
@@ -41,12 +41,13 @@ module.exports = {
         })
 
         socket.on('version', ({version}) => {
-            if (versionCheck.isCompatible(pkg.version, version)) {
+            let ret = versionCheck.compare(pkg.version, version)
+            if (ret == 0) {
                 log.info(`check version success, server: ${version}, client: ${pkg.version}`)
                 return
             }
 
-            if (versionCheck.isSmaller(pkg.version, version)) {
+            if (ret < 0) {
                 log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the client`)
             } else {
                 log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the server`)

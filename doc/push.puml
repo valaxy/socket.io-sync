@@ -1,0 +1,6 @@
+@startuml
+push -> server: create connection
+server -> push: init
+
+
+@enduml

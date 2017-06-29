@@ -1,6 +1,6 @@
 {
   "name": "siosync-pull",
-  "version": "0.3.0",
+  "version": "1.0.0-dev",
   "bin": {
     "siosync-pull": "./lib/cli.js"
   },

@@ -3,8 +3,21 @@ const socketIO = require('socket.io-client')
 const fs = require('fs')
 const log = require('log4js').getLogger('push')
 const pkg = require('../package')
-const versionCheck = require('./versionCheck')
+const versionCheck = require('./share/versionCheck')
 const path = require('path')
+const Protocol = require('./protocol')
+const Task = require('./task')
+
+
+const waitPushPreparing = function(serverInfo, pushTask, protocol) {
+    log.info('wait pull clients connect')
+    let unbind = protocol.info(({pullCount}) => {
+        if (pullCount > 0) {
+            pushTask.resolve()
+            unbind()
+        }
+    })
+}
 
 module.exports = function ({
 	ignoreInitial,
@@ -18,69 +31,84 @@ module.exports = function ({
     workplacePath
 	}) {
 	let socket = socketIO(`http://${socketHost}:${socketPort}/push?room=${room}`, {path: socketPath})
+    let protocol = new Protocol(socket)
     let fileCount = 0
     let pushCount = 0
     let ready = false
     log.info(`workplacePath: ${workplacePath}`)
 
-    socket.on('version', ({version}) => {
-        if (versionCheck.isCompatible(pkg.version, version)) {
-            log.info(`check version success, server: ${version}, client: ${pkg.version}`)
-            return
-        }
 
-        if (versionCheck.isSmaller(pkg.version, version)) {
-            log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the client`)
-        } else {
-            log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the server`)
-        }
-        socket.close()
-        process.exit(-1)
+    protocol.connect(() => {
+        log.info(`connect: ${socket.io.uri}`)
     })
 
-	socket.on('connect', () => {
-		log.info(`connect to ${socket.io.uri}`)
-	})
+    protocol.disconnect(() => {
+        log.info(`disconnect`)
+    })
 
-	let watcher = chokidar.watch(paths, {
-		ignored,
-		ignoreInitial,
-        cwd: workplacePath
-	})
+	protocol.init((serverInfo) => {
+        let {version, pullCount} = serverInfo
+        let ret = versionCheck.compare(pkg.version, version)
+        if (ret == 0) {
+            log.info(`check version success, server: ${version}, client: ${pkg.version}`)
+        } else {
+            if (ret < 0) {
+                log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the client`)
+            } else {
+                log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the server`)
+            }
+            socket.close()
+            process.exit(-1)
+        }
 
-	const change = p => {
-		p = p.replace(/\\/g, '/')
-		log.info(`push ${p}`)
-        fileCount += 1
+        let pushTask = new Task
 
-		fs.readFile(path.join(workplacePath, p), (err, buf) => {
-			if (err) {
-                pushCount += 1 // error file bug should add up
-                log.error(err.message)
-                maybeEnd()
-                return
+        waitPushPreparing(serverInfo, pushTask, protocol)
+
+        pushTask.promise.then(() => {
+            log.info('start push event')
+
+        	let watcher = chokidar.watch(paths, {
+        		ignored,
+        		ignoreInitial,
+                cwd: workplacePath
+        	})
+
+        	const change = p => {
+        		p = p.replace(/\\/g, '/')
+        		log.info(`push ${p}`)
+                fileCount += 1
+
+        		fs.readFile(path.join(workplacePath, p), (err, buf) => {
+        			if (err) {
+                        pushCount += 1 // error file bug should add up
+                        log.error(err.message)
+                        maybeEnd()
+                        return
+                    }
+
+                    protocol.emitFile(p, buf, () => {
+                        pushCount += 1
+                        maybeEnd()
+                    })
+        		})
+        	}
+
+            const maybeEnd = () => {
+                if (!watch && ready && pushCount == fileCount) {
+                    protocol.emitEnd()
+                    watcher.close()
+                    socket.close()
+                    log.info('already push all files, exit')
+                }
             }
 
-			socket.emit('file', {path: p, text: buf}, () => {
-                pushCount += 1
+        	watcher.on('add', change)
+        	watcher.on('change', change)
+            watcher.on('ready', () => {
+                ready = true
                 maybeEnd()
             })
-		})
-	}
-
-    const maybeEnd = () => {
-        if (!watch && ready && pushCount == fileCount) {
-            socket.emit('end')
-            watcher.close()
-            socket.close()
-            log.info('already push all files, exit')
-        }
-    }
-
-	watcher.on('add', change)
-	watcher.on('change', change)
-    watcher.on('ready', () => {
-        ready = true
-        maybeEnd()
-    })
+        })
+	})
 }
