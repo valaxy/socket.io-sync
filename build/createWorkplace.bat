@@ -1,3 +1,7 @@
 cd ../
-mklink /D server\lib\share ..\..\push\lib\share
-mklink /D pull\lib\share ..\..\push\lib\share
+
+ln push/lib/share/protocol.js     server/lib/share/protocol.js
+ln push/lib/share/versionCheck.js server/lib/share/versionCheck.js
+
+ln push/lib/share/protocol.js     pull/lib/share/protocol.js
+ln push/lib/share/versionCheck.js pull/lib/share/versionCheck.js
