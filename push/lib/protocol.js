@@ -5,9 +5,9 @@ module.exports = class Protocol extends BaseProtocol {
         super(socket)
         this._listen('connect')
         this._listen('disconnect')
-        this._listen('info')
-        this._listen('version')
         this._listen('log')
+        this._listen('init')
+        this._listen('info')
     }
 
     emitFile(path, text, cb) {
@@ -26,15 +26,15 @@ module.exports = class Protocol extends BaseProtocol {
         return this._addCallback('disconnect', cb)
     }
 
+    log(cb) {
+        return this._addCallback('log', cb)
+    }
+
     init(cb) {
-        return this._addCallback('version', cb)
+        return this._addCallback('init', cb)
     }
 
     info(cb) {
         return this._addCallback('info', cb)
-    }
-
-    log(cb) {
-        return this._addCallback('log', cb)
     }
 }

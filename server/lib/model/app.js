@@ -1,5 +1,5 @@
 const Room = require('./room')
-const log = require('log4js').getLogger('server')
+const log = require('log4js').getLogger('app')
 
 
 module.exports = class App {

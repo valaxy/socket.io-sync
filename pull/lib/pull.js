@@ -23,6 +23,14 @@ module.exports = {
 			log.info(`connect to ${socket.io.uri}`)
 		})
 
+        protocol.disconnect(() => {
+            log.info('disconnect')
+        })
+
+        protocol.log(({level, message}) => {
+            log[level](message)
+        })
+
 		protocol.file(({path:filePath, text}) => {
 			//log.info(`pull ${filePath}`)
 

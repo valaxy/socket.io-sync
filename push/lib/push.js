@@ -46,6 +46,10 @@ module.exports = function ({
         log.info(`disconnect`)
     })
 
+    protocol.log(({level, message}) => {
+        log[level](message)
+    })
+
 	protocol.init((serverInfo) => {
         let {version, pullCount} = serverInfo
         let ret = versionCheck.compare(pkg.version, version)

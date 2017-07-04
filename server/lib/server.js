@@ -3,7 +3,9 @@ const socketIO = require('socket.io')
 const url = require('url')
 const log = require('log4js').getLogger('protocol')
 const pkg = require('../package')
-const App = require('./app')
+const App = require('./model/app')
+const LogicError = require('./model/logicError')
+const PushProtocol = require('./protocol/pushProtocol')
 
 // version, server -> pull
 // version, server -> push
@@ -25,10 +27,25 @@ module.exports = {
 
 		io.of('/push').on('connection', (socket) => {
 			let roomID = getRoomID(socket)
-            app.connectPush(roomID)
-			log.info(`connect push: ${socket.id}, room: ${roomID}`)
-            socket.join(roomID)
+            let protocol = new PushProtocol(socket)
+            log.info(`connect push: ${socket.id}, room: ${roomID}`)
 
+            // check connect
+            try {
+                app.connectPush(roomID)
+            } catch (e) {
+                if (e instanceof LogicError) {
+                    log.error(`connect push fail: ${e.message}`)
+                    protocol.emitLog(e.message, 'error')
+                    protocol.disconnect()
+                    return
+                } else {
+                    throw e
+                }
+            }
+
+
+            socket.join(roomID)
             let room = app.getRoom(roomID)
 
 			socket.on('file', ({path, text}, ack) => {
@@ -47,7 +64,7 @@ module.exports = {
             })
 
             // once connect, the push should check it's version
-            socket.emit('version', {
+            socket.emit('init', {
                 version: pkg.version,
                 pushCount: room.pushCount,
                 pullCount: room.pullCount
@@ -67,10 +84,22 @@ module.exports = {
 
 		io.of('/pull').on('connection', socket => {
 			let roomID = getRoomID(socket)
-            app.connectPull(roomID)
-			log.info(`connect pull: ${socket.id}, room: ${roomID}`)
-            socket.join(roomID)
+            log.info(`connect pull: ${socket.id}, room: ${roomID}`)
 
+            try {
+                app.connectPull(roomID)
+            } catch (e) {
+                if (e instanceof LogicError) {
+                    log.error(`connect pull fail: ${e.message}`)
+                    socket.emit('log', { message: e.message, level: 'error' })
+                    socket.disconnect(true)
+                    return
+                } else {
+                    throw e
+                }
+            }
+
+            socket.join(roomID)
             let room = app.getRoom(roomID)
 
             socket.on('disconnect', () => {
@@ -80,7 +109,7 @@ module.exports = {
 
 
             // once connect, the pull should check it's version
-            socket.emit('version', {
+            socket.emit('init', {
                 version: pkg.version
             })
 
@@ -98,6 +127,7 @@ module.exports = {
 
 		server.listen(port, host, (...params) => {
 			log.info(`server start listen: ${host}:${port}`)
+            log.info(`server version: ${pkg.version}`)
 			callback(...params)
 		})
 	}
