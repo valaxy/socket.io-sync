@@ -1,6 +1,7 @@
 {
   "name": "siosync-server",
   "version": "1.0.0",
+  "description": "server of socket.io-sync",
   "bin": {
     "siosync-server": "./lib/cli.js"
   },

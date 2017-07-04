@@ -1,6 +1,7 @@
 {
   "name": "siosync-push",
   "version": "1.0.0",
+  "description": "push client of socket.io-sync",
   "bin": {
     "siosync-push": "./lib/cli.js"
   },
