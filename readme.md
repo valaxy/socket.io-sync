@@ -1,3 +1,6 @@
+[![npm](https://img.shields.io/npm/v/siosync-server.svg?style=flat-square)](https://www.npmjs.com/package/siosync-server)
+[![npm](https://img.shields.io/npm/v/siosync-push.svg?style=flat-square)](https://www.npmjs.com/package/siosync-push)
+[![npm](https://img.shields.io/npm/v/siosync-pull.svg?style=flat-square)](https://www.npmjs.com/package/siosync-pull)
 [![devDependencies Status](https://david-dm.org/valaxy/socket.io-sync/dev-status.svg?style=flat-square)](https://david-dm.org/valaxy/socket.io-sync?type=dev)
 
 **socket.io-sync** is a tool collection which help you push files to any places you may want them be by network and socket.io
