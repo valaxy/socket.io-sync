@@ -4,23 +4,26 @@ const fs = require('fs-extra')
 const log = require('log4js').getLogger('pull')
 const pkg = require('../package')
 const versionCheck = require('./share/versionCheck')
+const Protocol = require('./protocol')
+
 
 module.exports = {
 	start({
 		socketHost,
 		socketPort,
 		socketPath,
+        room,
 		workplacePath,
-		room,
         chmod
 		}) {
 		let socket = socketIO(`http://${socketHost}:${socketPort}/pull?room=${room}`, {path: socketPath})
+        let protocol = new Protocol(socket)
 
-		socket.on('connect', () => {
+		protocol.connect(() => {
 			log.info(`connect to ${socket.io.uri}`)
 		})
 
-		socket.on('file', ({path:filePath, text}) => {
+		protocol.file(({path:filePath, text}) => {
 			//log.info(`pull ${filePath}`)
 
 			let absFilePath = path.normalize(path.join(workplacePath, filePath))
@@ -32,15 +35,16 @@ module.exports = {
                 mode: chmod
             }, err => {
 				if (err) return log.error(`save ${filePath} failed: ${err}`)
-				log.info(`sync ${filePath} success`)
+				log.info(`sync ${filePath} ${text.length} B`)
 			})
 		})
 
-        socket.on('end', () => {
+        protocol.end(() => {
+            log.info('all files push')
             socket.close()
         })
 
-        socket.on('version', ({version}) => {
+        protocol.init(({version}) => {
             let ret = versionCheck.compare(pkg.version, version)
             if (ret == 0) {
                 log.info(`check version success, server: ${version}, client: ${pkg.version}`)
