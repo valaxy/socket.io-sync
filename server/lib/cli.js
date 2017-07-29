@@ -7,7 +7,7 @@ const server = require('./server')
 let parseArgv = function () {
 	commander
 		.version(pkg.version)
-		.option('-c --config [path]', 'path of config file') // must
+		.option('-c, --config [path]', 'path of config file') // must
 		.parse(process.argv)
 
 	let configPath = commander.config ? commander.config : 'siosync.js'

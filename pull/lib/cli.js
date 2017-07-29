@@ -42,8 +42,8 @@ const cliCheck = function(options) {
 let main = function () {
 	commander
 		.version(pkg.version)
-		.option('-c --config [path]', 'path of config file')
-        .option('-t --timeout [timeout]', 'timeout in milliseconds')
+		.option('-c, --config [path]', 'path of config file')
+        .option('-t, --timeout [timeout]', 'timeout in milliseconds')
 		.parse(process.argv)
 
     let config = configCheck(commander.config)

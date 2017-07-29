@@ -37,9 +37,9 @@ const checkConfig = function(configPath) {
 const main = function () {
 	commander
 		.version(pkg.version)
-		.option('-c --config [path]', 'path of config file')
-        .option('-w --watch',         'watch local files changes and continuously push them to server')
-		.option('-i --ignoreInitial', "dont't push files when initial, use combining with watch")
+		.option('-c, --config [path]', 'path of config file')
+        .option('-w, --watch',         'watch local files changes and continuously push them to server')
+		.option('-i, --ignoreInitial', "dont't push files when initial, use combining with watch")
 		.parse(process.argv)
 
     try {
