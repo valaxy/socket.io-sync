@@ -34,13 +34,23 @@ const configCheck = function(configPath) {
     return config
 }
 
+const cliCheck = function(options) {
+    if (!options.timeout) { options.timeout = 0 }
+    return options
+}
+
 let main = function () {
 	commander
 		.version(pkg.version)
 		.option('-c --config [path]', 'path of config file')
+        .option('-t --timeout [timeout]', 'timeout in milliseconds')
 		.parse(process.argv)
 
     let config = configCheck(commander.config)
+    config = cliCheck(Object.assign(config, {
+        timeout: commander.timeout
+    }))
+
     log.info(`workplacePath: ${config.workplacePath}`)
     log.info(`room:  ${config.room}`)
 

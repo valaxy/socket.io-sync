@@ -14,10 +14,17 @@ module.exports = {
 		socketPath,
         room,
 		workplacePath,
-        chmod
+        chmod,
+        timeout
 		}) {
 		let socket = socketIO(`http://${socketHost}:${socketPort}/pull?room=${room}`, {path: socketPath})
         let protocol = new Protocol(socket)
+        let timeoutHandler
+
+        const end = function() {
+            clearTimeout(timeoutHandler)
+            socket.close()
+        }
 
 		protocol.connect(() => {
 			log.info(`connect to ${socket.io.uri}`)
@@ -49,7 +56,7 @@ module.exports = {
 
         protocol.end(() => {
             log.info('all files push')
-            socket.close()
+            end()
         })
 
         protocol.init(({version}) => {
@@ -67,5 +74,12 @@ module.exports = {
             socket.close()
             process.exit(-1)
         })
+
+        if (timeout > 0) {
+            timeoutHandler = setTimeout(() => {
+                log.warn(`timeout ${timeout}ms`)
+                end()
+            }, timeout)
+        }
 	}
 }

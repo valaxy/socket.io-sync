@@ -2,6 +2,6 @@
 module.exports = {
 	socketHost: '127.0.0.1',
 	socketPort: 12345,
-	room      : 'abc',
+	room      : '06c297e060b611e78e2777baf67bc398',
 	paths     : ['push/']
 }

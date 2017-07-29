@@ -1,1 +1,1 @@
-node ../../pull/lib/cli --config siosync-pull.js
+node ../../pull/lib/cli --config siosync-pull.js --timeout 2000
