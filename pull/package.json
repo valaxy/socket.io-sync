@@ -1,6 +1,6 @@
 {
   "name": "siosync-pull",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "pull client of socket.io-sync",
   "bin": {
     "siosync-pull": "./lib/cli.js"

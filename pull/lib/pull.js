@@ -5,7 +5,7 @@ const log = require('log4js').getLogger('pull')
 const pkg = require('../package')
 const versionCheck = require('./share/versionCheck')
 const Protocol = require('./protocol')
-
+const code = require('./code')
 
 module.exports = {
 	start({
@@ -21,9 +21,10 @@ module.exports = {
         let protocol = new Protocol(socket)
         let timeoutHandler
 
-        const end = function() {
+        const end = function(c=code.OK) {
             clearTimeout(timeoutHandler)
             socket.close()
+			process.exitCode = c
         }
 
 		protocol.connect(() => {
@@ -71,14 +72,14 @@ module.exports = {
             } else {
                 log.error(`server version not match, server: ${version}, client: ${pkg.version}, you should upgrate the server`)
             }
-            socket.close()
-            process.exit(-1)
+
+			end(code.VERSION_NOT_MATCH)
         })
 
         if (timeout > 0) {
             timeoutHandler = setTimeout(() => {
                 log.warn(`timeout ${timeout}ms`)
-                end()
+                end(code.TIMEOUT)
             }, timeout)
         }
 	}
