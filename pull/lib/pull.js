@@ -7,24 +7,25 @@ const versionCheck = require('./share/versionCheck')
 const Protocol = require('./protocol')
 const code = require('./code')
 
-module.exports = {
-	start({
-		socketHost,
-		socketPort,
-		socketPath,
-        room,
-		workplacePath,
-        chmod,
-        timeout
-		}) {
+module.exports = function({
+	socketHost,
+	socketPort,
+	socketPath,
+	room,
+	workplacePath,
+	chmod,
+	timeout
+	}) {
+	return new Promise((resolve, reject) => {
 		let socket = socketIO(`http://${socketHost}:${socketPort}/pull?room=${room}`, {path: socketPath})
         let protocol = new Protocol(socket)
         let timeoutHandler
+		let exitCode = null
 
         const end = function(c=code.OK) {
             clearTimeout(timeoutHandler)
-            socket.close()
-			process.exitCode = c
+			exitCode = c
+			socket.close()
         }
 
 		protocol.connect(() => {
@@ -33,6 +34,13 @@ module.exports = {
 
         protocol.disconnect(() => {
             log.info('disconnect')
+			if (exitCode == code.OK) {
+				resolve()
+			} else {
+				reject({
+					code: exitCode
+				})
+			}
         })
 
         protocol.log(({level, message}) => {
@@ -82,5 +90,5 @@ module.exports = {
                 end(code.TIMEOUT)
             }, timeout)
         }
-	}
+	})
 }

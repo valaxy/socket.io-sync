@@ -4,6 +4,7 @@ const path = require('path')
 const pkg = require('../package')
 const pull = require('./pull')
 const log = require('log4js').getLogger('pull')
+log.level = 'DEBUG'
 
 class RuntimeError extends Error { }
 
@@ -54,7 +55,10 @@ let main = function () {
     log.info(`workplacePath: ${config.workplacePath}`)
     log.info(`room:  ${config.room}`)
 
-    pull.start(Object.assign(config, { }))
+    pull(Object.assign(config, { }))
+		.catch(({code}) => {
+			log.error(`exit code: ${code}`)
+		})
 }
 
 main()
