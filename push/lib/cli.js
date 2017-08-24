@@ -42,21 +42,21 @@ const main = function () {
 		.option('-i, --ignoreInitial', "dont't push files when initial, use combining with watch")
 		.parse(process.argv)
 
-    try {
-        let config = checkConfig(commander.config)
-    	config = Object.assign({}, config, {
-    		ignoreInitial: commander.ignoreInitial,
-            watch: commander.watch
-    	})
-        push(config)
-    } catch (e) {
-        if (e instanceof RuntimeError) {
-            log.error(e.message)
-            log.error(e)
-        } else {
-            throw e
-        }
-    }
+
+    let config = checkConfig(commander.config)
+	config = Object.assign({}, config, {
+		ignoreInitial: commander.ignoreInitial,
+        watch: commander.watch
+	})
+
+    push(config).then(({code}) => {
+		if (code != 0) {
+			process.exitCode = code
+			log.error(`exit code: ${code}`)
+		}
+	}).catch(e => {
+		log.error(e)
+	})
 }
 
 main()

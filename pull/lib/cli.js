@@ -57,6 +57,7 @@ let main = function () {
 
     pull(Object.assign(config, { }))
 		.catch(({code}) => {
+			process.exitCode = code
 			log.error(`exit code: ${code}`)
 		})
 }
