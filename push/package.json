@@ -2,10 +2,10 @@
   "name": "siosync-push",
   "version": "1.0.1",
   "description": "push client of socket.io-sync",
+  "main": "lib/push.js",
   "bin": {
     "siosync-push": "./lib/cli.js"
   },
-  "main": "./lib/push.js",
   "dependencies": {
     "chokidar": "^1.6.1",
     "commander": "^2.9.0",
