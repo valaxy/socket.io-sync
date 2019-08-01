@@ -1,5 +1,4 @@
 const chokidar = require('chokidar')
-const socketIO = require('socket.io-client')
 const fs = require('fs')
 const log = require('log4js').getLogger('push')
 const pkg = require('../package')
@@ -7,11 +6,12 @@ const versionCheck = require('./share/versionCheck')
 const path = require('path')
 const Protocol = require('./protocol')
 const Task = require('./task')
+const socketIOProxy = require('./proxy')
 
 
-const waitPushPreparing = function(serverInfo, pushTask, protocol) {
+const waitPushPreparing = function (serverInfo, pushTask, protocol) {
     log.info('wait pull clients connect')
-    let unbind = protocol.info(({pullCount}) => {
+    let unbind = protocol.info(({ pullCount }) => {
         if (pullCount > 0) {
             pushTask.resolve()
             unbind()
@@ -20,19 +20,19 @@ const waitPushPreparing = function(serverInfo, pushTask, protocol) {
 }
 
 module.exports = function ({
-	ignoreInitial,
+    ignoreInitial,
     paths,
-	ignored,
-	socketHost,
-	socketPort,
-	socketPath,
-	room,
+    ignored,
+    socketHost,
+    socketPort,
+    socketPath,
+    room,
     watch,
-    workplacePath
-	}) {
+    workplacePath,
+}) {
 
     return new Promise((resolve, reject) => {
-    	let socket = socketIO(`http://${socketHost}:${socketPort}/push?room=${room}`, {path: socketPath})
+        let socket = socketIOProxy.connect(`http://${socketHost}:${socketPort}/push?room=${room}`, { path: socketPath })
         let protocol = new Protocol(socket)
         let fileCount = 0
         let pushCount = 0
@@ -50,12 +50,12 @@ module.exports = function ({
             resolve({ code: exitCode })
         })
 
-        protocol.log(({level, message}) => {
+        protocol.log(({ level, message }) => {
             log[level](message)
         })
 
-    	protocol.init((serverInfo) => {
-            let {version, pullCount} = serverInfo
+        protocol.init((serverInfo) => {
+            let { version, pullCount } = serverInfo
             let ret = versionCheck.compare(pkg.version, version)
             if (ret == 0) {
                 log.info(`check version success, server: ${version}, client: ${pkg.version}`)
@@ -77,19 +77,19 @@ module.exports = function ({
             pushTask.promise.then(() => {
                 log.info('start push event')
 
-            	let watcher = chokidar.watch(paths, {
-            		ignored,
-            		ignoreInitial,
+                let watcher = chokidar.watch(paths, {
+                    ignored,
+                    ignoreInitial,
                     cwd: workplacePath
-            	})
+                })
 
-            	const change = p => {
-            		p = p.replace(/\\/g, '/')
-            		log.info(`push ${p}`)
+                const change = p => {
+                    p = p.replace(/\\/g, '/')
+                    log.info(`push ${p}`)
                     fileCount += 1
 
-            		fs.readFile(path.join(workplacePath, p), (err, buf) => {
-            			if (err) {
+                    fs.readFile(path.join(workplacePath, p), (err, buf) => {
+                        if (err) {
                             pushCount += 1 // error file bug should add up
                             log.error(err.message)
                             maybeEnd()
@@ -100,8 +100,8 @@ module.exports = function ({
                             pushCount += 1
                             maybeEnd()
                         })
-            		})
-            	}
+                    })
+                }
 
                 const maybeEnd = () => {
                     if (!watch && ready && pushCount == fileCount) {
@@ -112,13 +112,13 @@ module.exports = function ({
                     }
                 }
 
-            	watcher.on('add', change)
-            	watcher.on('change', change)
+                watcher.on('add', change)
+                watcher.on('change', change)
                 watcher.on('ready', () => {
                     ready = true
                     maybeEnd()
                 })
             })
-    	})
+        })
     })
 }

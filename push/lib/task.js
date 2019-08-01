@@ -13,7 +13,7 @@ module.exports = class Task {
     }
 
     get status() { return this._status }
-    
+
     get promise() { return this._promise }
 
     resolve(...params) {

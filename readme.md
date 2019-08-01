@@ -1,5 +1,3 @@
-[![devDependencies Status](https://david-dm.org/valaxy/socket.io-sync/dev-status.svg?style=flat-square)](https://david-dm.org/valaxy/socket.io-sync?type=dev)
-
 **socket.io-sync** is a tool collection which help you push files to any places you may want them be by network and socket.io
 
 ## Server [![npm](https://img.shields.io/npm/v/siosync-server.svg?style=flat-square)](https://www.npmjs.com/package/siosync-server)
@@ -57,7 +55,8 @@ siosync-pull
 
 Check `siosync-pull --help` for more detail
 
-## Push [![npm](https://img.shields.io/npm/v/siosync-push.svg?style=flat-square)](https://www.npmjs.com/package/siosync-push)
+## Push [![npm](https://img.shields.io/npm/v/siosync-push.svg?style=flat-square)](https://www.npmjs.com/package/siosync-push) [![dependencies Status](https://david-dm.org/valaxy/socket.io-sync/status.svg?style=flat-square&path=push)](https://david-dm.org/valaxy/socket.io-sync?path=push)
+
 Thirdly, put **siosync-push** to where you want files to be sent to other places:
 
 ```bash
