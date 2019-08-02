@@ -55,7 +55,7 @@ siosync-pull
 
 Check `siosync-pull --help` for more detail
 
-Proxy is supported
+Proxy is not supported
 
 ## Push [![npm](https://img.shields.io/npm/v/siosync-push.svg?style=flat-square)](https://www.npmjs.com/package/siosync-push) [![dependencies Status](https://david-dm.org/valaxy/socket.io-sync/status.svg?style=flat-square&path=push)](https://david-dm.org/valaxy/socket.io-sync?path=push)
 
