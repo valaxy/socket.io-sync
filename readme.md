@@ -1,6 +1,6 @@
 **socket.io-sync** is a tool collection which help you push files to any places you may want them be by network and socket.io
 
-## Server [![npm](https://img.shields.io/npm/v/siosync-server.svg?style=flat-square)](https://www.npmjs.com/package/siosync-server)
+## Server [![npm](https://img.shields.io/npm/v/siosync-server.svg?style=flat-square)](https://www.npmjs.com/package/siosync-server) [![dependencies Status](https://david-dm.org/valaxy/socket.io-sync/status.svg?style=flat-square&path=server)](https://david-dm.org/valaxy/socket.io-sync?path=server)
 First of all, you should put **siosync-server** to where all **siosync-push** and **siosync-pull** can access.
 At the server where **siosync-server** placed in, run:
 
@@ -26,7 +26,7 @@ siosync-server
 Check `siosync-server --help` for more detail
 
 
-## Pull [![npm](https://img.shields.io/npm/v/siosync-pull.svg?style=flat-square)](https://www.npmjs.com/package/siosync-pull)
+## Pull [![npm](https://img.shields.io/npm/v/siosync-pull.svg?style=flat-square)](https://www.npmjs.com/package/siosync-pull) [![dependencies Status](https://david-dm.org/valaxy/socket.io-sync/status.svg?style=flat-square&path=pull)](https://david-dm.org/valaxy/socket.io-sync?path=pull)
 Secondly, put **siosync-pull** to where you want files to be received.
 To be precise, **siosync-pull** is the end that pull files from **siosync-server** which actually from **siosync-push**:
 
@@ -54,6 +54,8 @@ siosync-pull
 ```
 
 Check `siosync-pull --help` for more detail
+
+Proxy is supported
 
 ## Push [![npm](https://img.shields.io/npm/v/siosync-push.svg?style=flat-square)](https://www.npmjs.com/package/siosync-push) [![dependencies Status](https://david-dm.org/valaxy/socket.io-sync/status.svg?style=flat-square&path=push)](https://david-dm.org/valaxy/socket.io-sync?path=push)
 
@@ -86,3 +88,5 @@ siosync-push --watch --ignoreInitial
 ```
 
 Check `siosync-push --help` for more detail
+
+Proxy is supported

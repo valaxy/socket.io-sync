@@ -1,6 +1,6 @@
 {
   "name": "siosync-pull",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "pull client of socket.io-sync",
   "main": "lib/pull.js",
   "bin": {
@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "commander": "^2.9.0",
-    "fs-extra": "^4.0.1",
-    "log4js": "^2.3.3",
-    "semver": "^5.3.0",
-    "socket.io-client": "^2.0.2"
+    "fs-extra": "^8.1.0",
+    "log4js": "^4.5.1",
+    "semver": "^6.3.0",
+    "socket.io-client": "^2.2.0"
   },
   "license": "MIT"
 }
