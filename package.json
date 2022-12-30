@@ -6,7 +6,7 @@
   },
   "devDependencies": {
     "chai": "^4.0.2",
-    "mocha": "^6.2.0"
+    "mocha": "^10.2.0"
   },
   "license": "MIT"
 }
